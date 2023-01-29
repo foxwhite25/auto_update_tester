@@ -40,27 +40,24 @@ func RestartSelf() error {
 
 func main() {
 	println("Hello, world!")
-	localHash, err := ExecuteWithOutput("git", []string{"rev-parse", "HEAD"})
-	remoteHash, err := ExecuteWithOutput("git", []string{"ls-remote", "origin", "HEAD"})
-	remoteHash = strings.Split(remoteHash, "\t")[0]
+
+	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {
 		panic(err)
 	}
-	if localHash != remoteHash {
-		pullResult, err := ExecuteWithOutput("git", []string{"pull"})
-		if err != nil {
-			panic(err)
-		}
-		if strings.Contains(pullResult, "CONFLICT") {
-			println("There is a conflict, ignore it.")
-		} else {
-			println("Pull success, restart self.")
-			err = RestartSelf()
-			if err != nil {
-				panic(err)
-			}
-		}
-	} else {
-		println("No update detected, exiting...")
+
+	if strings.Contains(pullResult, "Already up to date.") {
+		println("Already up to date, exiting...")
+		return
+	}
+	if strings.Contains(pullResult, "CONFLICT") {
+		println("There is a conflict, exiting...")
+		return
+	}
+
+	println("Pull success, restart self.")
+	err = RestartSelf()
+	if err != nil {
+		panic(err)
 	}
 }

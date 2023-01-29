@@ -1,23 +1,9 @@
 package main
 
 import (
-	"os"
 	"os/exec"
-	"runtime"
 	"strings"
-	"syscall"
 )
-
-func RunCommandWithArgs(command string, args []string) error {
-	if runtime.GOOS == "windows" {
-		cmd := exec.Command(command, args...)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		cmd.Stdin = os.Stdin
-		return cmd.Run()
-	}
-	return syscall.Exec(command, args, os.Environ())
-}
 
 func ExecuteWithOutput(command string, args []string) (string, error) {
 	cmd := exec.Command(command, args...)
@@ -26,20 +12,7 @@ func ExecuteWithOutput(command string, args []string) (string, error) {
 }
 
 func RestartSelf() error {
-	self, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	args := os.Args
-	err = RunCommandWithArgs(self, args)
-	if err == nil {
-		os.Exit(0)
-	}
-	return err
-}
-
-func BuildSelf() error {
-	args := []string{"build", "auto_update_tester"}
+	args := []string{"run", "auto_update_tester"}
 	_, err := ExecuteWithOutput("go", args)
 	if err != nil {
 		return err
@@ -49,11 +22,6 @@ func BuildSelf() error {
 
 func main() {
 	println("Updated Version 2")
-
-	err := BuildSelf()
-	if err != nil {
-		panic(err)
-	}
 
 	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {
@@ -70,10 +38,6 @@ func main() {
 	}
 
 	println("Pull success, restart self.")
-	err = BuildSelf()
-	if err != nil {
-		panic(err)
-	}
 	err = RestartSelf()
 	if err != nil {
 		panic(err)

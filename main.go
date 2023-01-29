@@ -39,13 +39,8 @@ func RestartSelf() error {
 }
 
 func BuildSelf() error {
-	self, err := os.Executable()
-	if err != nil {
-		return err
-	}
-	args := []string{"build", self}
-	output, err := ExecuteWithOutput("go", args)
-	println(output)
+	args := []string{"build", "auto_update_tester"}
+	_, err := ExecuteWithOutput("go", args)
 	if err != nil {
 		return err
 	}
@@ -54,6 +49,11 @@ func BuildSelf() error {
 
 func main() {
 	println("Updated Version!")
+
+	err := BuildSelf()
+	if err != nil {
+		panic(err)
+	}
 
 	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {

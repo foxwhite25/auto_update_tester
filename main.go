@@ -53,7 +53,7 @@ func BuildSelf() error {
 }
 
 func main() {
-	println("Updated Version 2!")
+	println("Updated Version!")
 
 	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {

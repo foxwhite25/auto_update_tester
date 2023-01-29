@@ -1,9 +1,23 @@
 package main
 
 import (
+	"os"
 	"os/exec"
+	"runtime"
 	"strings"
+	"syscall"
 )
+
+func RunCommandWithArgs(command string, args []string) error {
+	if runtime.GOOS == "windows" {
+		cmd := exec.Command(command, args...)
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+		return cmd.Run()
+	}
+	return syscall.Exec(command, args, os.Environ())
+}
 
 func ExecuteWithOutput(command string, args []string) (string, error) {
 	cmd := exec.Command(command, args...)
@@ -13,7 +27,7 @@ func ExecuteWithOutput(command string, args []string) (string, error) {
 
 func RestartSelf() error {
 	args := []string{"run", "auto_update_tester"}
-	_, err := ExecuteWithOutput("go", args)
+	err := RunCommandWithArgs("go", args)
 	if err != nil {
 		return err
 	}
@@ -21,7 +35,7 @@ func RestartSelf() error {
 }
 
 func main() {
-	println("Updated Version 1")
+	println("Version 1")
 
 	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {

@@ -38,6 +38,19 @@ func RestartSelf() error {
 	return err
 }
 
+func BuildSelf() error {
+	self, err := os.Executable()
+	if err != nil {
+		return err
+	}
+	args := []string{"build", self}
+	_, err = ExecuteWithOutput("go", args)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func main() {
 	println("Updated Version!")
 
@@ -56,6 +69,10 @@ func main() {
 	}
 
 	println("Pull success, restart self.")
+	err = BuildSelf()
+	if err != nil {
+		panic(err)
+	}
 	err = RestartSelf()
 	if err != nil {
 		panic(err)

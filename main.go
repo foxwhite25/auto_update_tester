@@ -39,7 +39,7 @@ func RestartSelf() error {
 }
 
 func main() {
-	println("Hello, world!")
+	println("Updated Version!")
 
 	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {

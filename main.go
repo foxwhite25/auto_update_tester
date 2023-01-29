@@ -21,7 +21,7 @@ func RestartSelf() error {
 }
 
 func main() {
-	println("Updated Version 2")
+	println("Updated Version 1")
 
 	pullResult, err := ExecuteWithOutput("git", []string{"pull"})
 	if err != nil {

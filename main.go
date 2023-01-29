@@ -44,7 +44,8 @@ func BuildSelf() error {
 		return err
 	}
 	args := []string{"build", self}
-	_, err = ExecuteWithOutput("go", args)
+	output, err := ExecuteWithOutput("go", args)
+	println(output)
 	if err != nil {
 		return err
 	}

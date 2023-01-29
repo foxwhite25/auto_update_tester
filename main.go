@@ -48,7 +48,7 @@ func BuildSelf() error {
 }
 
 func main() {
-	println("Updated Version!")
+	println("Updated Version 2")
 
 	err := BuildSelf()
 	if err != nil {
